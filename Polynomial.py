@@ -54,5 +54,44 @@ class Monomial:
 	def __eq__(self, other):
 		return self.coeff == other.coeff and self.indets == other.indets
 	
+	def from_string(string):
+		"""
+		Makes a Monomial object from a string formatted as
+		in LaTeX. Ordering is assumed to follow the 
+		ordering of the input polynomial.
+		"""
+		new_indets = list()
+		new_coeff = str()
+		saw_dot = False
+		done_with_coeff = False
+		add_to_indets = False
+		curr = ""
+		for i in string:
+			if not done_with_coeff:
+				if i.isdigit():
+					new_coeff += i
+				elif i == "." and not saw_dot:
+					new_coeff += i
+					saw_dot = True
+				else:
+					new_coeff = float(new_coeff)
+					done_with_coeff = True
+			else:
+				if i == "^":
+					add_to_indets = True
+				elif add_to_indets and i.isdigit():
+					curr += i
+				elif not saw_dot and add_to_indets and i == ".":
+					curr += i
+					saw_dot = True
+				elif not i == "." and not i.isdigit():
+					saw_dot = False
+					add_to_indets = False
+					new_indets.append(float(curr))
+					curr = ""
+		new_indets.append(float(curr))
+		return Monomial(new_coeff, tuple(new_indets))
+
+	
 	def __repr__(self):
 		return "{} * {}".format(self.coeff, self.indets)
