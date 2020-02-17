@@ -31,6 +31,26 @@ class Monomial:
 		else:
 			raise Exception("Incompatible indets {} and {} in Monomial addition".format(self.indets,other.indets))
 	
+	def num_variables(self):
+		"""
+		Returns the number of indeterminates that comprise
+		<self>
+		"""
+		return len(self.indets)
+	
+	def divides(self, other):
+		"""
+		Takes two Monomials and outputs True iff <self>
+		divides other. Variable ordering is assumed to
+		follow the order of the <.indets> tuple.
+		"""
+		if self.num_variables() <= other.num_variables():
+			for i in range(self.num_variables()):
+				if self.indets[i] != other.indets[i]:
+					return False
+			return True
+		return False
+	
 	def __eq__(self, other):
 		return self.coeff == other.coeff and self.indets == other.indets
 	
