@@ -1,4 +1,4 @@
-import pdb
+
 class Polynomial:
 	def __init__(self, monos):
 		"""
@@ -16,12 +16,36 @@ class Polynomial:
 		"""
 		Order this polynomial with one of three monomial orderings
 		- lex
-		- grlex
-		- grevlex
+		- grlex TODO
+		- grevlex TODO
 		"""
 		if ordering == "lex":
 			self.monos.sort(reverse=True, key=(lambda x : x.indets))
+	
+	def copy(self):
+		"""
+		Get a deep copy of this Polynomial
+		"""
+		return Polynomial([x.copy() for x in self.monos])
+	
+	def get_leading_term(self):
+		"""
+		get the leading term of this Polynomial
+		"""
+		cpy = self.copy()
+		return cpy.monos[0]
 
+	def get_leading_coeff(self):
+		"""
+		get the leading coefficient of this Polynomial
+		"""
+		return self.get_leading_term().coeff
+	
+	def get_leading_indets(self):
+		"""
+		get the leading indets of this Polynomial
+		"""
+		return self.get_leading_term().indets
 	
 	def __add__(self, other):
 		"""
@@ -112,6 +136,12 @@ class Monomial:
 		<self>
 		"""
 		return len(self.indets)
+	
+	def copy(self):
+		"""
+		get a deep copy of this Monomial
+		"""
+		return Monomial(self.coeff, self.indets)
 	
 	def divides(self, other):
 		"""
