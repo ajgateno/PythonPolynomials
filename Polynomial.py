@@ -1,6 +1,43 @@
 
 class Polynomial:
-	pass
+	def __init__(self, monos):
+		self.monos = monos
+	
+	def total_deg(self):
+		return max([x.deg() for x in self.monos])
+	
+	def __add__(self, other):
+		new_monos = list()
+		for i in range(len(self.monos)):
+			appended = False
+			for j in range(len(other.monos)):
+				if self.monos[i].indets == other.monos[j].indets and not appended:
+					new_monos.append(self.monos[i] + other.monos[j])
+					appended = True
+			if not appended:
+				new_monos.append(self.monos[i])
+		result = Polynomial(new_monos)
+		result.flush()
+		return result
+	
+	def __neg__(self):
+		return Polynomial([-a for a in self.monos])
+	
+	def __sub__(self, other):
+		return self + -other
+	
+	def flush(self):
+		new_monos = list()
+		for i in self.monos:
+			if i.coeff != 0:
+				new_monos.append(i)
+		self.monos = new_monos
+	
+	def __repr__(self):
+		result = ""
+		for i in self.monos:
+			result += str(i) + " + "
+		return result[:-3] if len(self.monos) > 0 else "0"
 
 
 class Monomial:
@@ -51,8 +88,17 @@ class Monomial:
 			return True
 		return False
 	
+	def deg(self):
+		return sum(self.indets)
+	
 	def __eq__(self, other):
 		return self.coeff == other.coeff and self.indets == other.indets
+	
+	def __neg__(self):
+		return Monomial(-self.coeff, self.indets)
+
+	def __sub__(self, other):
+		return self + -other
 
 	def __repr__(self):
 		return "{} * {}".format(self.coeff, self.indets)
