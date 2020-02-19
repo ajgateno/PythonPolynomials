@@ -1,4 +1,4 @@
-
+import pdb
 class Polynomial:
 	def __init__(self, monos):
 		"""
@@ -11,6 +11,17 @@ class Polynomial:
 		Get the total degree of this polynomial
 		"""
 		return max([x.deg() for x in self.monos])
+	
+	def sort(self, ordering="lex"):
+		"""
+		Order this polynomial with one of three monomial orderings
+		- lex
+		- grlex
+		- grevlex
+		"""
+		if ordering == "lex":
+			self.monos.sort(reverse=True, key=(lambda x : x.indets))
+
 	
 	def __add__(self, other):
 		"""
