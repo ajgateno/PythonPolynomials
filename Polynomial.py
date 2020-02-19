@@ -1,12 +1,21 @@
 
 class Polynomial:
 	def __init__(self, monos):
+		"""
+		Initializes a new polynomial with monomials <monos>
+		"""
 		self.monos = monos
 	
 	def total_deg(self):
+		"""
+		Get the total degree of this polynomial
+		"""
 		return max([x.deg() for x in self.monos])
 	
 	def __add__(self, other):
+		"""
+		Adds two polynomials, <self> and <other>, together.
+		"""
 		new_monos = list()
 		for i in range(len(self.monos)):
 			appended = False
@@ -21,23 +30,41 @@ class Polynomial:
 		return result
 	
 	def __neg__(self):
+		"""
+		Returns the additive inverse of this polynomial
+		"""
 		return Polynomial([-a for a in self.monos])
 	
 	def __sub__(self, other):
+		"""
+		Subtracts the polynomial <other> from the polynomial <self>
+		"""
 		return self + -other
 	
 	def flush(self):
+		"""
+		Get rid of zero terms in our <self.monos> list
+		"""
 		new_monos = list()
 		for i in self.monos:
-			if i.coeff != 0:
+			if i.coeff != 0: # Monomials with coeff == 0 are reduntant
 				new_monos.append(i)
 		self.monos = new_monos
 	
 	def __repr__(self):
+		"""
+		Return a string representation of our Polynomial object
+		"""
 		result = ""
 		for i in self.monos:
 			result += str(i) + " + "
 		return result[:-3] if len(self.monos) > 0 else "0"
+	
+	def __eq__(self, other):
+		"""
+		Return whether two polynomials are equal
+		"""
+		return len(self.monos) == len(other.monos) and all([x in other.monos for x in self.monos])
 
 
 class Monomial:
