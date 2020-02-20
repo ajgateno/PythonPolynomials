@@ -79,6 +79,7 @@ class Polynomial:
 	def flush(self):
 		"""
 		Get rid of zero terms in our <self.monos> list
+		and TODO: combine like terms
 		"""
 		new_monos = list()
 		for i in self.monos:
@@ -167,6 +168,22 @@ class Monomial:
 
 	def __sub__(self, other):
 		return self + -other
+
+	def __mul__(self, other):
+		"""
+		Get the product of two monomials
+		"""
+		op1 = self.copy()
+		op2 = other.copy()
+		if self.num_variables() < other.num_variables():
+			p = [0 for x in range(other.num_variables() - self.num_variables())]
+			op1.indets += tuple(p)
+		elif self.num_variables() > other.num_variables():
+			p = [0 for x in range(self.num_variables() - other.num_variables())]
+			op2.indets += tuple(p)
+		new_coeff = op1.coeff * op2.coeff
+		new_indets = [op1.indets[i] + op2.indets[i] for i in range(op1.num_variables())]
+		return Monomial(new_coeff, tuple(new_indets))
 
 	def __repr__(self):
 		return "{} * {}".format(self.coeff, self.indets)
