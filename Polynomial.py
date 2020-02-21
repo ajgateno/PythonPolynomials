@@ -109,6 +109,18 @@ class Polynomial:
 		Return whether two polynomials are equal
 		"""
 		return len(self.monos) == len(other.monos) and all([x in other.monos for x in self.monos])
+	
+	def __mul__(self, other):
+		"""
+		Return the product of <self> and <other>
+		"""
+		new_monos = list()
+		for i in self.monos:
+			for j in self.monos:
+				new_monos.append(i * j)
+		result = Polynomial(new_monos)
+		result.flush()
+		return result
 
 
 class Monomial:
