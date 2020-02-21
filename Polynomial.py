@@ -85,7 +85,15 @@ class Polynomial:
 		for i in self.monos:
 			if i.coeff != 0: # Monomials with coeff == 0 are reduntant
 				new_monos.append(i)
-		self.monos = new_monos
+		new_new_monos = list()
+		for i in new_monos:
+			if i.indets in [x.indets for x in new_new_monos]:
+				for j in range(len(new_new_monos)):
+					if new_new_monos[j].indets == i.indets:
+						new_new_monos[j] += i
+			else:
+				new_new_monos.append(i)
+		self.monos = new_new_monos
 	
 	def __repr__(self):
 		"""
