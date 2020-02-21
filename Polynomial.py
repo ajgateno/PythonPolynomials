@@ -1,4 +1,4 @@
-
+import pdb
 class Polynomial:
 	def __init__(self, monos):
 		"""
@@ -33,7 +33,10 @@ class Polynomial:
 		get the leading term of this Polynomial
 		"""
 		cpy = self.copy()
-		return cpy.monos[0]
+		if len(cpy.monos) > 0:
+			return cpy.monos[0]
+		else:
+			return 0
 
 	def get_leading_coeff(self):
 		"""
@@ -51,15 +54,16 @@ class Polynomial:
 		"""
 		Adds two polynomials, <self> and <other>, together.
 		"""
-		new_monos = list()
-		for i in range(len(self.monos)):
-			appended = False
-			for j in range(len(other.monos)):
-				if self.monos[i].indets == other.monos[j].indets and not appended:
-					new_monos.append(self.monos[i] + other.monos[j])
-					appended = True
-			if not appended:
-				new_monos.append(self.monos[i])
+		# new_monos = list()
+		# for i in range(len(self.monos)):
+		# 	appended = False
+		# 	for j in range(len(other.monos)):
+		# 		if self.monos[i].indets == other.monos[j].indets and not appended:
+		# 			new_monos.append(self.monos[i] + other.monos[j])
+		# 			appended = True
+		# 	if not appended:
+		# 		new_monos.append(self.monos[i])
+		new_monos = self.monos + other.monos
 		result = Polynomial(new_monos)
 		result.flush()
 		return result
@@ -94,6 +98,7 @@ class Polynomial:
 			else:
 				new_new_monos.append(i)
 		self.monos = new_new_monos
+		self.sort()
 	
 	def __repr__(self):
 		"""
@@ -121,6 +126,32 @@ class Polynomial:
 		result = Polynomial(new_monos)
 		result.flush()
 		return result
+	
+	def division(self, others):
+		"""
+		credit: This algorithm was calqued from <<D. Cox, J. Little, D. O'Shea>> 3ed pg 64
+
+		return the division of <self> by <others>
+		<self> is a polynomial and
+		<others> is a list of polynomials
+		"""
+		result = [Polynomial([]), [Polynomial([]) for i in range(len(others))]]
+		p = self.copy()
+		while p != Polynomial([]):
+			i = 0
+			division_occurred = False
+			# pdb.set_trace()
+			while i < len(result[-1]) and not division_occurred:
+				if others[i].get_leading_term().divides(p.get_leading_term()):
+					result[-1][i] += Polynomial([p.get_leading_term()/others[i].get_leading_term()])
+					p -= Polynomial([p.get_leading_term()/others[i].get_leading_term() * others[i].get_leading_term()])
+					division_occurred = True
+				else:
+					i += 1
+			if not division_occurred:
+				result[0] += Polynomial([p.get_leading_term()])
+				p -= Polynomial([p.get_leading_term()])
+		return tuple(result)
 
 
 class Monomial:
@@ -172,7 +203,7 @@ class Monomial:
 		"""
 		if self.num_variables() <= other.num_variables():
 			for i in range(self.num_variables()):
-				if self.indets[i] != other.indets[i]:
+				if self.indets[i] > other.indets[i]:
 					return False
 			return True
 		return False
@@ -204,6 +235,20 @@ class Monomial:
 		new_coeff = op1.coeff * op2.coeff
 		new_indets = [op1.indets[i] + op2.indets[i] for i in range(op1.num_variables())]
 		return Monomial(new_coeff, tuple(new_indets))
+	
+	def __truediv__(self, other):
+		"""
+		Get the division of two monomials
+		"""
+		new_indets = tuple([self.indets[i] - other.indets[i] for i in range(self.num_variables())])
+		new_coeff = self.coeff / other.coeff
+		return Monomial(new_coeff, new_indets)
 
 	def __repr__(self):
 		return "{} * {}".format(self.coeff, self.indets)
+
+if __name__ == '__main__':
+	p = Polynomial([Monomial(1,(2,1)),Monomial(1,(1,2)),Monomial(1,(0,2))])
+	q1 = Polynomial([Monomial(1,(1,1)),Monomial(-1,(0,0))])
+	q2 = Polynomial([Monomial(1,(0,2)),Monomial(-1,(0,0))])
+	print(p.division([q1,q2]))
