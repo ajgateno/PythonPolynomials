@@ -54,15 +54,6 @@ class Polynomial:
 		"""
 		Adds two polynomials, <self> and <other>, together.
 		"""
-		# new_monos = list()
-		# for i in range(len(self.monos)):
-		# 	appended = False
-		# 	for j in range(len(other.monos)):
-		# 		if self.monos[i].indets == other.monos[j].indets and not appended:
-		# 			new_monos.append(self.monos[i] + other.monos[j])
-		# 			appended = True
-		# 	if not appended:
-		# 		new_monos.append(self.monos[i])
 		new_monos = self.monos + other.monos
 		result = Polynomial(new_monos)
 		result.flush()
@@ -151,8 +142,10 @@ class Polynomial:
 			if not division_occurred:
 				result[0] += Polynomial([p.get_leading_term()])
 				p -= Polynomial([p.get_leading_term()])
-		return tuple(result)
-
+		quotient = Polynomial([])
+		for i in result[-1]:
+			quotient += i
+		return (result[0], quotient)
 
 class Monomial:
 	def __init__(self, coeff, indets):
@@ -251,4 +244,7 @@ if __name__ == '__main__':
 	p = Polynomial([Monomial(1,(2,1)),Monomial(1,(1,2)),Monomial(1,(0,2))])
 	q1 = Polynomial([Monomial(1,(1,1)),Monomial(-1,(0,0))])
 	q2 = Polynomial([Monomial(1,(0,2)),Monomial(-1,(0,0))])
-	print(p.division([q1,q2]))
+	division_result = p.division([q1,q2])
+	print("{} divided by {} and {} =".format(p,q1,q2))
+	print("Remainder: {}".format(division_result[0]))
+	print("Quotient: {}".format(division_result[1]))
