@@ -181,7 +181,7 @@ class Polynomial:
 	def __eq__(self, other):
 		if type(other) in [int,float,complex]:
 			return self == Polynomial([{'const': other}])
-		return self.terms == other.terms or len(self.terms) == len(other.terms) and all([self.terms[x] in other.terms for x in range(len(self.terms))])
+		return len(self.terms) == len(other.terms) and all([self.terms[x] in other.terms for x in range(len(self.terms))])
 
 	def __pow__(self, other):
 		if other == 1:
@@ -209,4 +209,4 @@ class Polynomial:
 					curr += label + ("^" + str(term[label]) if term[label] != 1 else "")
 			curr += " + "
 			result += curr
-		return result[:-2] if len(result) else ""
+		return result[:-3] if len(result) else ""
