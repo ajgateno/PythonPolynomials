@@ -65,8 +65,20 @@ class Polynomial:
 			if label == "const":
 				result[label] = a[label] / b[label]
 			elif label != "tup":
-				result[label] = a[label] - b[label]
+				result[label] = a[label] if label not in b else a[label] - b[label]
 		return Polynomial([result])
+	
+	def s_polynomial(f, g):
+		lcm = f.terms[0].copy()
+		for label in g.terms[0]:
+			if label in lcm and label != "tup":	
+				lcm[label] = max([g.terms[0][label], lcm[label]])
+			elif label:
+				lcm[label] = g.terms[0][label]
+		lcm["const"] = 1
+		a = Polynomial.term_divide(lcm, f.terms[0])
+		b = Polynomial.term_divide(lcm, g.terms[0])
+		return (a * f) - (b * g)
 	
 	def _simplify(self):
 		for term in range(len(self.terms)):
@@ -188,8 +200,9 @@ class Polynomial:
 			return Polynomial([{'const':1}])
 		if type(other) is int:
 			result = self.copy()
+			temp = self.copy()
 			for i in range(other - 1):
-				result *= result
+				result *= temp
 			return result
 		else:
 			raise Exception("unsupported operand type(s) for ** or pow(): 'Polynomial' and '" + type(other).__name__ + "'")

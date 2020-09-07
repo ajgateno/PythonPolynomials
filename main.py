@@ -1,4 +1,5 @@
 from Polynomial import Polynomial
+from Ideal import Ideal
 
 if __name__ == '__main__':
 	x = Polynomial([{'x':1}])
