@@ -10,10 +10,10 @@ class Ideal:
         done = False
         while not done:
             current = result.copy()
-            for p in current:
-                for g in current:
-                    if p != g:
-                        s = Polynomial.s_polynomial(p,g) % current
+            for p in range(len(current)):
+                for g in range(p, len(current)):
+                    if current[p] != current[g]:
+                        s = Polynomial.s_polynomial(current[p],current[g]) % current
                         if s != 0:
                             result.append(s)
             done = (current == result)
